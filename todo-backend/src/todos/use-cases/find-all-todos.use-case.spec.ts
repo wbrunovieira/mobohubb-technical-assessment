@@ -45,7 +45,9 @@ describe('FindAllTodosUseCase', () => {
       const result = await useCase.execute();
 
       expect(result).toEqual(todos);
-      expect(repository.find).toHaveBeenCalledWith();
+      expect(repository.find).toHaveBeenCalledWith({
+        order: { createdAt: 'DESC', id: 'DESC' },
+      });
     });
 
     it('returns an empty array when there are no todos', async () => {

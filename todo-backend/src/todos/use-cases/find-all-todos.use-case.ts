@@ -11,6 +11,10 @@ export class FindAllTodosUseCase {
   ) {}
 
   execute(): Promise<Todo[]> {
-    return this.todosRepository.find();
+    // `id` is the tiebreaker: createdAt has 1-second resolution, so two
+    // todos created within the same second would otherwise sort randomly.
+    return this.todosRepository.find({
+      order: { createdAt: 'DESC', id: 'DESC' },
+    });
   }
 }

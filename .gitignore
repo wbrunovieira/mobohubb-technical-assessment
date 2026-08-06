@@ -1,0 +1,3 @@
+# Isolated worktrees created for background agents — internal tooling state,
+# not something that belongs in version history.
+.claude/worktrees/
