@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { App } from 'supertest/types';
 import { TodosModule } from '../../src/todos/todos.module';
 import { dataSourceOptions } from '../../src/database/data-source';
+import { createValidationPipe } from '../../src/validation-pipe';
 
 export interface TestApp {
   app: INestApplication<App>;
@@ -43,6 +44,7 @@ export async function createTestApp(databasePath: string): Promise<TestApp> {
   }).compile();
 
   const app = moduleFixture.createNestApplication<INestApplication<App>>();
+  app.useGlobalPipes(createValidationPipe());
   await app.init();
 
   return { app, databasePath };

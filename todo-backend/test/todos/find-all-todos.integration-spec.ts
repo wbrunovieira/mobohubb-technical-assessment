@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+import { TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FindAllTodosUseCase } from '../../src/todos/use-cases/find-all-todos.use-case';
 import { Todo } from '../../src/todos/entities/todo.entity';
-import { dataSourceOptions } from '../../src/database/data-source';
+import { createTestModule, closeTestModule } from '../utils/create-test-module';
 
 describe('FindAllTodosUseCase (integration)', () => {
   let module: TestingModule;
@@ -11,28 +11,14 @@ describe('FindAllTodosUseCase (integration)', () => {
   let repository: Repository<Todo>;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
-      imports: [
-        // Same schema-creation path as dev/prod (real migrations, no
-        // `synchronize`) so a drift between the entity and a migration
-        // would fail here too, not just at e2e/runtime.
-        TypeOrmModule.forRoot({
-          ...dataSourceOptions,
-          database: ':memory:',
-          synchronize: false,
-          migrationsRun: true,
-        }),
-        TypeOrmModule.forFeature([Todo]),
-      ],
-      providers: [FindAllTodosUseCase],
-    }).compile();
+    module = await createTestModule([FindAllTodosUseCase]);
 
     useCase = module.get(FindAllTodosUseCase);
     repository = module.get(getRepositoryToken(Todo));
   });
 
   afterEach(async () => {
-    await module.close();
+    await closeTestModule(module);
   });
 
   it('returns an empty array when the todos table has no rows', async () => {
