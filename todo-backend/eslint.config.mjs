@@ -32,4 +32,12 @@ export default tseslint.config(
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
+  {
+    // Jest mock functions (e.g. `repository.find`) trip this rule as a
+    // false positive: https://typescript-eslint.io/rules/unbound-method/#how-to-use
+    files: ['**/*.spec.ts', '**/*-spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
 );
